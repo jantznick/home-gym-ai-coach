@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String?  // Nullable for OIDC users
+  slug        String   @unique
+  authProvider String  @default("local")  // "local" or "oidc"
+  oidcId      String?  @unique
+
+  workouts        Workout[]
+  exercises       Exercise[]
+
+  friendsAsUser   Friend[] @relation("UserFriendship")   // Tracks friendships where this user initiated
+  friendsAsFriend Friend[] @relation("FriendFriendship") // Tracks friendships where this user was added
+
+  friendRequestsSent     FriendRequest[] @relation("SentRequests")
+  friendRequestsReceived FriendRequest[] @relation("ReceivedRequests")
+
+  feedEntries  FeedEntry[] @relation("UserFeedEntries")
+  likes        Like[]      @relation("UserLikes")
+  comments     Comment[]   @relation("UserComments")
+  qrAuthSessions QrAuthSession[] @relation("UserQrAuthSessions")
+
+  createdAt      DateTime @default(now())
+}
+
+model Friend {
+  id        String @id @default(uuid())
+  userId    String
+  friendId  String
+
+  user      User @relation("UserFriendship", fields: [userId], references: [id], onDelete: Cascade)
+  friend    User @relation("FriendFriendship", fields: [friendId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, friendId])
+}
+
+model FriendRequest {
+  id         String @id @default(uuid())
+  senderId   String
+  receiverId String
+  status     String @default("pending") // "pending", "accepted", "declined"
+
+  sender     User @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+
+  @@unique([senderId, receiverId])
+}
+
+model Workout {
+  id       String   @id @default(uuid())
+  title    String
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  exercises WorkoutExercise[]
+  createdAt DateTime @default(now())
+}
+
+model Exercise {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  difficulty  String   // Beginner, Intermediate, Advanced
+  category    String   // Bodyweight, Free Weights, Machines, etc.
+  equipment   String[] // List of equipment types
+  targets     String[] // Targeted muscle groups
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  workoutExercises WorkoutExercise[]
+
+  createdAt   DateTime @default(now())
+}
+
+model WorkoutExercise {
+  id         String   @id @default(uuid())
+  workoutId  String
+  exerciseId String
+
+  workout    Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+}
+
+model FeedEntry {
+  id          String   @id @default(uuid())
+  userId      String  
+  type        String   // "workout" or "milestone"
+  workoutId   String?  // If this was a workout post
+  message     String  
+
+  user        User @relation("UserFeedEntries", fields: [userId], references: [id], onDelete: Cascade)
+
+  likes       Like[]
+  comments    Comment[]
+  
+  createdAt   DateTime @default(now())
+}
+
+model Like {
+  id         String   @id @default(uuid())
+  userId     String  
+  feedEntryId String  
+
+  user       User @relation("UserLikes", fields: [userId], references: [id], onDelete: Cascade)
+  feedEntry  FeedEntry @relation(fields: [feedEntryId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, feedEntryId])  // Users can only like once per post
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  userId     String  
+  feedEntryId String  
+  text       String  
+
+  user       User @relation("UserComments", fields: [userId], references: [id], onDelete: Cascade)
+  feedEntry  FeedEntry @relation(fields: [feedEntryId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+}
+
+model QrAuthSession {
+  token       String   @id 
+  userId      String?  @unique
+  status      String   @default("pending") // "pending", "authenticated"
+  createdAt   DateTime @default(now())
+
+  user        User?    @relation("UserQrAuthSessions", fields: [userId], references: [id])
+}
