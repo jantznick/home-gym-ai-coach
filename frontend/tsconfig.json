@@ -4,6 +4,10 @@
 	  "module": "ESNext",
 	  "jsx": "react-jsx",
 	  "strict": true,
-	  "allowSyntheticDefaultImports": true
+	  "allowSyntheticDefaultImports": true,
+	  "baseUrl": ".",
+	  "paths": {
+		"@/*": ["./*"]
+	  }
 	}
 }
