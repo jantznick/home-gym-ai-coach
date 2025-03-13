@@ -1,6 +1,7 @@
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 import dotenv from 'dotenv'
+import { Application } from 'express'; 
 
 dotenv.config()
 
@@ -26,7 +27,7 @@ const options = {
 
 const swaggerSpec = swaggerJSDoc(options)
 
-const setupSwagger = (app) => {
+const setupSwagger = (app: Application) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 }
 

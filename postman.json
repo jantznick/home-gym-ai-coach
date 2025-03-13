@@ -1,0 +1,192 @@
+{
+	"info": {
+	  "_postman_id": "aa11bb22-cc33-dd44-ee55-ff6677889900",
+	  "name": "My Fitness API",
+	  "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+	  {
+		"key": "base_url",
+		"value": "http://localhost:5000",
+		"type": "string"
+	  }
+	],
+	"item": [
+	  {
+		"name": "Admin - Health Check",
+		"request": {
+		  "method": "GET",
+		  "header": [],
+		  "url": "{{base_url}}/api/admin/health"
+		}
+	  },
+	  {
+		"name": "Auth - Signup",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/auth/signup",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"email\\": \\"user@example.com\\", \\"password\\": \\"SecurePass123\\" }"
+		  }
+		}
+	  },
+	  {
+		"name": "Auth - Login",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/auth/login",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"email\\": \\"user@example.com\\", \\"password\\": \\"SecurePass123\\" }"
+		  }
+		}
+	  },
+	  {
+		"name": "Auth - Invalid Login",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/auth/login",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"email\\": \\"user@example.com\\", \\"password\\": \\"wrongpassword\\" }"
+		  }
+		},
+		"assertions": [
+		  { "response.status": 401 },
+		  { "response.body.error": "Invalid credentials" }
+		]
+	  },
+	  {
+		"name": "Auth - Signup Invalid Data",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/auth/signup",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"password\\": \\"TestPass123!\\" }"
+		  }
+		},
+		"assertions": [
+		  { "response.status": 400 },
+		  { "response.body.error": "Email is required" }
+		]
+	  },
+	  {
+		"name": "Friends - Send Request",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/friends/request",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"senderId\\": \\"user1-id\\", \\"receiverId\\": \\"user2-id\\" }"
+		  }
+		}
+	  },
+	  {
+		"name": "Friends - Accept Request",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/friends/accept",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"requestId\\": \\"friend-request-id\\" }"
+		  }
+		}
+	  },
+	  {
+		"name": "Friends - Cannot Send Friend Request to Self",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/friends/request",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"senderId\\": \\"user1-id\\", \\"receiverId\\": \\"user1-id\\" }"
+		  }
+		},
+		"assertions": [
+		  { "response.status": 400 },
+		  { "response.body.error": "You cannot send a friend request to yourself" }
+		]
+	  },
+	  {
+		"name": "Workouts - Create Workout",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/workouts",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"title\\": \\"Leg Day\\", \\"userId\\": \\"user1-id\\" }"
+		  }
+		}
+	  },
+	  {
+		"name": "Workouts - Get All Workouts",
+		"request": {
+		  "method": "GET",
+		  "header": [],
+		  "url": "{{base_url}}/api/workouts"
+		}
+	  },
+	  {
+		"name": "Feed - Like a Post",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/feed/like",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"userId\\": \\"user1-id\\", \\"feedEntryId\\": \\"post-id\\" }"
+		  }
+		}
+	  },
+	  {
+		"name": "Feed - Comment on a Post",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/feed/comment",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"userId\\": \\"user1-id\\", \\"feedEntryId\\": \\"post-id\\", \\"text\\": \\"Great workout!\\" }"
+		  }
+		}
+	  },
+	  {
+		"name": "QR Auth - Generate QR Code",
+		"request": {
+		  "method": "POST",
+		  "header": [],
+		  "url": "{{base_url}}/api/qr-login/init"
+		}
+	  },
+	  {
+		"name": "QR Auth - Check Login Status",
+		"request": {
+		  "method": "GET",
+		  "header": [],
+		  "url": "{{base_url}}/api/qr-login/status/{{session_token}}"
+		}
+	  },
+	  {
+		"name": "QR Auth - Confirm Login",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/qr-login/confirm",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"sessionToken\\": \\"session_token\\", \\"userId\\": \\"user1-id\\" }"
+		  }
+		}
+	  }
+	]
+  }

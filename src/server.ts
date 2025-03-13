@@ -25,7 +25,7 @@ import { setupWebSocket } from "./utils/websocket";
 dotenv.config()
 const prisma = new PrismaClient();
 
-const app = express()
+export const app = express()
 const server = http.createServer(app); // Wrap Express with HTTP server
 const io = setupWebSocket(server);
 
