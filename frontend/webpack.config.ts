@@ -35,7 +35,7 @@ export default {
     })
   ],
   devServer: {
-    static: "./dist",
+    static: "./public",
     hot: true
   }
 };

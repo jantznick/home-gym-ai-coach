@@ -4,9 +4,11 @@
 	"description": "React frontend for My Fitness App",
 	"private": true,
 	"scripts": {
-		"dev": "webpack serve --mode development --open",
+		"dev": "npm run watch-css & webpack serve --mode development --open",
 		"build": "webpack --mode production",
-		"start": "serve -s dist"
+		"start": "serve -s dist",
+		"build-css": "tailwindcss -i ./src/styles/index.css -o ./public/css/style.css",
+		"watch-css": "tailwindcss -i ./src/styles/index.css -o ./public/css/style.css --watch"
 	},
 	"dependencies": {
 		"react": "^18.2.0",
