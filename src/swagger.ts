@@ -22,7 +22,7 @@ const swaggerDefinition = {
 
 const options = {
   swaggerDefinition,
-  apis: ['./routes/*.ts'], // Scan route files in the "routes" folder for Swagger comments
+  apis: ['./src/routes/*.ts'], // Scan route files in the "routes" folder for Swagger comments
 }
 
 const swaggerSpec = swaggerJSDoc(options)
