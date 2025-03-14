@@ -10,13 +10,18 @@ datasource db {
 model User {
   id          String   @id @default(uuid())
   email       String   @unique
-  password    String?  // Nullable for OIDC users
+  password    String?  // Nullable for oAuth users
   slug        String   @unique
-  authProvider String  @default("local")  // "local" or "oidc"
-  oidcId      String?  @unique
+  authProvider String  @default("local")  // "local", "google", "facebook", "apple"
+  providerId  String?  @unique            // The unique ID given by Google, Facebook, Apple
 
   workouts        Workout[]
   exercises       Exercise[]
+
+  isPremium          Boolean  @default(false) // Tracks premium status
+  stripeCustomerId   String?  @unique
+  stripeSubscriptionId String?
+  isPremiumExpires   DateTime @default(now())
 
   friendsAsUser   Friend[] @relation("UserFriendship")   // Tracks friendships where this user initiated
   friendsAsFriend Friend[] @relation("FriendFriendship") // Tracks friendships where this user was added
@@ -57,6 +62,14 @@ model FriendRequest {
   createdAt  DateTime @default(now())
 
   @@unique([senderId, receiverId])
+}
+
+model ChatMessage {
+  id       String  @id @default(uuid())
+  userId   String // to
+  message  String 
+  sender   String  // userId or "virtual_coach"
+  timestamp DateTime @default(now())
 }
 
 model Workout {

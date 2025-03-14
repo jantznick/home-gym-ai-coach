@@ -17,8 +17,15 @@ import feedRoutes from "./routes/feedRoutes";
 import stravaRoutes from "./routes/stravaRoutes";
 import adminRoutes from "./routes/adminRoutes";
 import qrAuthRoutes from "./routes/qrAuthRoutes";
+import stripeRoutes from "./routes/stripeRoutes";
+import stripeWebhook from "./routes/stripeWebhook";
+import stripeSubscriptionRoutes from "./routes/stripeSubscriptionRoutes";
+import oauthRoutes from "./routes/oauthRoutes";
+import aiRoutes from "./routes/aiRoutes";
+import chatRoutes from "./routes/chatRoutes";
 
 import { authenticateUser } from "./middleware/authMiddleware";
+import { requirePremium } from './middleware/premiumMiddleware';
 
 import { setupWebSocket } from "./utils/websocket";
 
@@ -41,7 +48,11 @@ app.use(
 		secret: process.env.SESSION_SECRET || "defaultSecret",
 		resave: false,
 		saveUninitialized: false,
-		cookie: { secure: false, httpOnly: true, maxAge: 86400000 }, // 24 hours
+		cookie: {
+			secure: false,
+			httpOnly: true,
+			maxAge: 1000 * 60 * 60 * 24 * 30, // 30 day session expiry
+		},
 	})
 );
 
@@ -54,7 +65,10 @@ setupSwagger(app)
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/oauth", oauthRoutes);
 app.use("/api/qr-login", qrAuthRoutes);
+app.use("/api/stripe", stripeRoutes);
+app.use("/api/stripe/webhook", stripeWebhook);
 
 // Authentication Middleware
 app.use(authenticateUser);
@@ -65,9 +79,14 @@ app.use('/api/exercises', exerciseRoutes)
 app.use("/api/workouts", workoutRoutes);
 app.use("/api/muscles", muscleRoutes);
 app.use("/api/friends", friendRoutes);
+app.use("/api/chat", chatRoutes);
 app.use("/api/feed", feedRoutes);
 app.use("/api/strava", stravaRoutes);
+app.use("/api/stripe/subscription", stripeSubscriptionRoutes);
 
+// TODO: figure this error out
+app.use(requirePremium(req, res, next));
+app.use("/api/ai", aiRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000

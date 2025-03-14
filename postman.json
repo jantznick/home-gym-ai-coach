@@ -187,6 +187,154 @@
 			"raw": "{ \\"sessionToken\\": \\"session_token\\", \\"userId\\": \\"user1-id\\" }"
 		  }
 		}
+	  },
+	  {
+		"name": "Get User Subscription Status",
+		"request": {
+		  "method": "GET",
+		  "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+		  "url": "{{base_url}}/api/stripe/subscription/status"
+		},
+		"assertions": [
+		  { "response.status": 200 },
+		  { "response.body.isPremium": { "type": "boolean" } }
+		]
+	  },
+	  {
+		"name": "Cancel Subscription",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+		  "url": "{{base_url}}/api/stripe/subscription/cancel"
+		},
+		"assertions": [
+		  { "response.status": 200 },
+		  { "response.body.message": "Subscription cancellation scheduled" }
+		]
+	  },
+	  {
+		"name": "Update Subscription Plan",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+		  "url": "{{base_url}}/api/stripe/subscription/update",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"newPriceId\\": \\"price_abc123\\" }"
+		  }
+		},
+		"assertions": [
+		  { "response.status": 200 },
+		  { "response.body.message": "Subscription updated successfully" }
+		]
+	  },
+	  {
+		"name": "Reject Subscription Update Without Price ID",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+		  "url": "{{base_url}}/api/stripe/subscription/update",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ }"
+		  }
+		},
+		"assertions": [
+		  { "response.status": 400 },
+		  { "response.body.error": "newPriceId is required" }
+		]
+	  },
+	  {
+		"name": "Reject Unauthorized Subscription Status Request",
+		"request": {
+		  "method": "GET",
+		  "header": [],
+		  "url": "{{base_url}}/api/stripe/subscription/status"
+		},
+		"assertions": [
+		  { "response.status": 401 },
+		  { "response.body.error": "Unauthorized - Login required" }
+		]
+	  },
+	  {
+		"name": "AI - Chat",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/ai/chat",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"userMessage\\": \\"Give me a beginner workout plan\\" }"
+		  }
+		},
+		"assertions": [
+		  { "response.status": 200 },
+		  { "response.body.reply": { "type": "string" } }
+		]
+	  },
+	  {
+		"name": "Chat - Send Message",
+		"request": {
+		  "method": "POST",
+		  "header": [{ "key": "Content-Type", "value": "application/json" }],
+		  "url": "{{base_url}}/api/chat/send",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"userMessage\\": \\"Suggest a beginner workout plan.\\" }"
+		  }
+		},
+		"assertions": [
+		  { "response.status": 200 },
+		  { "response.body.reply": { "type": "string" } }
+		]
+	  },
+	  {
+		"name": "Chat - Get History",
+		"request": {
+		  "method": "GET",
+		  "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+		  "url": "{{base_url}}/api/chat/history"
+		},
+		"assertions": [
+		  { "response.status": 200 },
+		  { "response.body": { "type": "array" } }
+		]
+	  },
+	  {
+		"name": "Chat with AI",
+		"request": {
+		  "method": "POST",
+		  "url": "{{base_url}}/api/chat/send",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"receiverId\\": \\"virtual_coach\\", \\"message\\": \\"Give me a HIIT routine\\" }"
+		  }
+		}
+	  },
+	  {
+		"name": "Chat with Friend",
+		"request": {
+		  "method": "POST",
+		  "url": "{{base_url}}/api/chat/send",
+		  "body": {
+			"mode": "raw",
+			"raw": "{ \\"receiverId\\": \\"{{friend_user_id}}\\", \\"message\\": \\"Let's hit the gym!\\" }"
+		  }
+		}
+	  },
+	  {
+		"name": "Get AI Chat History",
+		"request": {
+		  "method": "GET",
+		  "url": "{{base_url}}/api/chat/history"
+		}
+	  },
+	  {
+		"name": "Get Friend Chat History",
+		"request": {
+		  "method": "GET",
+		  "url": "{{base_url}}/api/chat/history/{{friend_user_id}}"
+		}
 	  }
 	]
   }

@@ -23,7 +23,9 @@ const Home: React.FC = () => {
 				Go to About Page
 			</Link>
 
-			<Button>ShadCN Button</Button>
+			<Link to="/login" className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+				Go to Login Page
+			</Link>
 
 			<Input />
 

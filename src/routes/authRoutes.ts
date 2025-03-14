@@ -18,14 +18,6 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
 const MAIL_USER = process.env.MAIL_USER;
 const MAIL_PASS = process.env.MAIL_PASS;
 
-// OIDC Config
-const OIDC_AUTHORIZATION_URL = process.env.OIDC_AUTHORIZATION_URL!;
-const OIDC_TOKEN_URL = process.env.OIDC_TOKEN_URL!;
-const OIDC_USERINFO_URL = process.env.OIDC_USERINFO_URL!;
-const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID!;
-const OIDC_CLIENT_SECRET = process.env.OIDC_CLIENT_SECRET!;
-const OIDC_REDIRECT_URI = process.env.OIDC_REDIRECT_URI!;
-
 // Nodemailer setup for sending password reset emails
 const transporter = nodemailer.createTransport({
 	service: "gmail",
@@ -245,82 +237,16 @@ router.post("/reset-password", async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/auth/oidc/login:
- *   get:
- *     summary: Redirects user to OIDC provider (Authentik)
- *     tags: [Authentication]
- */
-router.get("/oidc/login", (req: Request, res: Response) => {
-	const authUrl = `${OIDC_AUTHORIZATION_URL}?client_id=${OIDC_CLIENT_ID}&redirect_uri=${OIDC_REDIRECT_URI}&response_type=code&scope=openid email profile`;
-	res.redirect(authUrl);
-});
-
-/**
- * @swagger
- * /api/auth/oidc/callback:
- *   get:
- *     summary: Handles OIDC callback, exchanges auth code for access token
- *     tags: [Authentication]
- */
-router.get("/oidc/callback", async (req: Request, res: Response) => {
-	try {
-		const { code } = req.query;
-		if (!code) return res.status(400).json({ error: "Missing authorization code" });
-
-		// Exchange authorization code for access token
-		const tokenResponse = await axios.post(OIDC_TOKEN_URL, new URLSearchParams({
-			client_id: OIDC_CLIENT_ID,
-			client_secret: OIDC_CLIENT_SECRET,
-			grant_type: "authorization_code",
-			redirect_uri: OIDC_REDIRECT_URI,
-			code: code as string,
-		}).toString(), {
-			headers: { "Content-Type": "application/x-www-form-urlencoded" },
-		});
-
-		const { access_token } = tokenResponse.data;
-
-		// Fetch user info from OIDC provider
-		const userInfoResponse = await axios.get(OIDC_USERINFO_URL, {
-			headers: { Authorization: `Bearer ${access_token}` },
-		});
-
-		const { sub, email, name } = userInfoResponse.data;
-
-		// Check if user already exists in DB
-		let user = await prisma.user.findUnique({ where: { oidcId: sub } });
-
-		if (!user) {
-			// Create a new user if not found
-			user = await prisma.user.create({
-				data: {
-					email,
-					oidcId: sub,
-					authProvider: "oidc",
-					slug: name.replace(/\\s+/g, "-").toLowerCase(),
-				},
-			});
-		}
-
-		// Create session for the user
-		req.session!.userId = user.id;
-
-		res.redirect("/dashboard"); // Redirect user to dashboard after login
-	} catch (error) {
-		console.error("OIDC Callback Error:", error);
-		res.status(500).json({ error: "OIDC Authentication Failed" });
-	}
-});
-
-/**
- * @swagger
  * /api/auth/logout:
  *   post:
  *     summary: Logs out user
  *     tags: [Authentication]
  */
 router.post("/logout", (req: Request, res: Response) => {
-	req.session.destroy(() => res.json({ message: "Logged out" }));
+	req.session.destroy(() => {
+		res.clearCookie("connect.sid"); // Clears Session Cookie
+		res.json({ message: "Logged out" });
+	})
 });
 
 export default router;
