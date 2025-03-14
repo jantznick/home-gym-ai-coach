@@ -7,6 +7,8 @@ export const setupWebSocket = (server: http.Server) => {
   });
 
   io.on("connection", (socket) => {
+	// This is built so iot devices can use a qr code to connect, I'm not quite sure the flow here
+	// TODO: figure out the above
     console.log("🔌 New WebSocket connection:", socket.id);
 
     socket.on("watch-session", (sessionToken) => {
