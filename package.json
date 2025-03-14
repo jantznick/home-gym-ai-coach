@@ -1,5 +1,5 @@
 {
-  "name": "workout-loldo",
+  "name": "home-gym-ai-coach",
   "version": "1.0.0",
   "description": "A fitness tracking API using Express, TypeScript, Prisma, and PostgreSQL.",
   "main": "dist/server.js",
@@ -27,6 +27,7 @@
     "bcryptjs": "^3.0.2",
     "connect-pg-simple": "^10.0.0",
     "cors": "^2.8.5",
+    "date-fns": "^3.6.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
@@ -35,6 +36,7 @@
     "openai": "^4.87.3",
     "qrcode": "^1.5.4",
     "random-word-slugs": "^0.1.7",
+    "react-day-picker": "^8.10.1",
     "socket.io": "^4.8.1",
     "stripe": "^17.7.0",
     "swagger-jsdoc": "^6.2.8",

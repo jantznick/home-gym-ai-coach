@@ -13,8 +13,11 @@ import {
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { Calendar } from "../components/ui/calendar";
 
 const Home: React.FC = () => {
+	const [date, setDate] = React.useState<Date | undefined>(new Date())
+
 	return (
 		<div className="flex flex-col items-center justify-center h-screen bg-gray-100">
 			<h1 className="text-4xl font-bold text-blue-600">Welcome to My Fitness App</h1>
@@ -59,6 +62,13 @@ const Home: React.FC = () => {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+
+			<Calendar
+				mode="single"
+				selected={date}
+				onSelect={setDate}
+				className="rounded-md border"
+			/>
 
 		</div>
 	);
