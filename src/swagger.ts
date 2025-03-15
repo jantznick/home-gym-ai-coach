@@ -1,7 +1,9 @@
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 import dotenv from 'dotenv'
-import { Application } from 'express'; 
+import { Application, static as expressStatic } from 'express'; 
+import { writeFileSync } from 'fs';
+import { join } from 'path';
 
 dotenv.config()
 
@@ -27,8 +29,18 @@ const options = {
 
 const swaggerSpec = swaggerJSDoc(options)
 
-const setupSwagger = (app: Application) => {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
-}
+// Write the Swagger spec to a JSON file in the public directory
+const publicDir = join(__dirname, 'public');
+writeFileSync(join(publicDir, 'swagger.json'), JSON.stringify(swaggerSpec, null, 2));
 
+const setupSwagger = (app: Application) => {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: 'My API Docs',
+    customfavIcon: '/favicon.ico',
+    customJs: '/swagger-custom.js'
+  }));
+
+  // Serve the public directory
+  app.use(expressStatic(publicDir));
+}
 export default setupSwagger

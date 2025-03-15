@@ -1,0 +1,608 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "My Express API",
+    "version": "1.0.0",
+    "description": "API documentation for the Express backend"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5555",
+      "description": "Local Server"
+    }
+  ],
+  "paths": {
+    "/api/admin/health": {
+      "get": {
+        "summary": "API status health check",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Server is running and database is connected."
+          },
+          "500": {
+            "description": "Server error or database issue."
+          }
+        }
+      }
+    },
+    "/api/ai/chat": {
+      "post": {
+        "summary": "Basic AI Chat interaction using OpenAI",
+        "tags": [
+          "AI"
+        ]
+      }
+    },
+    "/api/auth/signup": {
+      "post": {
+        "summary": "Create a new user account",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully"
+          },
+          "409": {
+            "description": "Email already exists"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Log in a user",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logged in successfully"
+          },
+          "401": {
+            "description": "Invalid email or password"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "summary": "Logs out user",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": null,
+        "responses": {
+          "200": {
+            "description": "Logged out successfully"
+          },
+          "500": {
+            "description": "Logout failed"
+          }
+        }
+      }
+    },
+    "/api/auth/forgot-password": {
+      "post": {
+        "summary": "Request a password reset",
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "summary": "Reset a user's password using a reset token",
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/api/chat/send": {
+      "post": {
+        "summary": "Send a message to a friend or the virtual coach",
+        "tags": [
+          "Chat"
+        ]
+      }
+    },
+    "/api/chat/history/{withUserId}": {
+      "get": {
+        "summary": "Get conversation history",
+        "tags": [
+          "Chat"
+        ]
+      }
+    },
+    "/api/exercises": {
+      "get": {
+        "summary": "Get all exercises",
+        "tags": [
+          "Exercises"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of exercise objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Push Ups"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "A basic upper body exercise."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new exercise",
+        "tags": [
+          "Exercises"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Squats"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "A lower body exercise."
+                  },
+                  "userId": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created a new exercise"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/exercises/{id}": {
+      "get": {
+        "summary": "Get a specific exercise by ID",
+        "tags": [
+          "Exercises"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The exercise ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the exercise object"
+          },
+          "404": {
+            "description": "Exercise not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an exercise by ID",
+        "tags": [
+          "Exercises"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The exercise ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/feed": {
+      "get": {
+        "summary": "Get a user's newsfeed (friends' activities)",
+        "tags": [
+          "Feed"
+        ]
+      }
+    },
+    "/api/friends/request": {
+      "post": {
+        "summary": "Send a friend request",
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/api/friends/accept": {
+      "post": {
+        "summary": "Accept a friend request",
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/api/friends/list": {
+      "get": {
+        "summary": "Get a user's friends list",
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/api/muscles": {
+      "get": {
+        "summary": "Get exercises grouped by main muscle and difficulty",
+        "tags": [
+          "Muscles"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "equipment",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated list of required equipment"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns aggregated exercise data"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/qr-login/init": {
+      "post": {
+        "summary": "Initialize QR authentication session (For Arduino devices)",
+        "tags": [
+          "QR Authentication"
+        ],
+        "responses": {
+          "201": {
+            "description": "Session created and QR code generated"
+          }
+        }
+      }
+    },
+    "/api/qr-login/status/{token}": {
+      "get": {
+        "summary": "Check if authentication session is completed (For Arduino polling)",
+        "tags": [
+          "QR Authentication"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns current session status"
+          }
+        }
+      }
+    },
+    "/api/qr-login/confirm": {
+      "post": {
+        "summary": "Confirm user authentication from phone login",
+        "tags": [
+          "QR Authentication"
+        ]
+      }
+    },
+    "/api/strava/auth": {
+      "get": {
+        "summary": "Redirect user to Strava authentication",
+        "tags": [
+          "Strava"
+        ]
+      }
+    },
+    "/api/strava/callback": {
+      "get": {
+        "summary": "Handle Strava OAuth callback & store access token",
+        "tags": [
+          "Strava"
+        ]
+      }
+    },
+    "/api/strava/share": {
+      "post": {
+        "summary": "Share a workout to Strava",
+        "tags": [
+          "Strava"
+        ]
+      }
+    },
+    "/api/stripe/checkout": {
+      "post": {
+        "summary": "Initiate Stripe Checkout for premium subscription",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/api/stripe/subscription/status": {
+      "get": {
+        "summary": "Get current user's subscription status",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/api/stripe/subscription/cancel": {
+      "post": {
+        "summary": "Cancel current user's subscription",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/api/stripe/subscription/update": {
+      "post": {
+        "summary": "Update user's subscription to a different plan",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/api/stripe/webhook": {
+      "post": {
+        "summary": "Handle Stripe webhook events to update subscription status",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/api/users": {
+      "get": {
+        "summary": "Get all users",
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of user objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new user",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@example.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created a new user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "John Doe"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "john@example.com"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workouts/{id}": {
+      "get": {
+        "summary": "Get a workout by ID",
+        "tags": [
+          "Workouts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The workout ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the workout object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "My Morning Workout"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workout not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User authentication API"
+    },
+    {
+      "name": "Exercises",
+      "description": "API to manage exercises"
+    },
+    {
+      "name": "Muscles",
+      "description": "API to filter exercises by muscle and difficulty"
+    },
+    {
+      "name": "Users",
+      "description": "User management API"
+    },
+    {
+      "name": "Workouts",
+      "description": "API to manage user workouts"
+    }
+  ]
+}

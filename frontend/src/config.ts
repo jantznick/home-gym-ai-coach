@@ -1,1 +1,9 @@
 export const API_BASE_URL = "http://localhost:5000";
+
+// Social login configuration
+export const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID";
+export const GOOGLE_REDIRECT_URI = "YOUR_GOOGLE_REDIRECT_URI";
+export const APPLE_CLIENT_ID = "YOUR_APPLE_CLIENT_ID";
+export const APPLE_REDIRECT_URI = "YOUR_APPLE_REDIRECT_URI";
+export const FACEBOOK_CLIENT_ID = "YOUR_FACEBOOK_CLIENT_ID";
+export const FACEBOOK_REDIRECT_URI = "YOUR_FACEBOOK_REDIRECT_URI";

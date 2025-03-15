@@ -17,6 +17,76 @@ interface AuthInterstitialProps {
 }
 
 const AuthInterstitial: React.FC<AuthInterstitialProps> = ({ open, onClose }) => {
+	const handleLogin = async () => {
+		try {
+			const response = await fetch('/api/auth/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ email, password }),
+			});
+			if (!response.ok) {
+				// TODO: Handle login error
+				console.error('Login failed');
+				return;
+			}
+			const data = await response.json();
+			// TODO: Handle successful login
+			console.log('Login successful', data);
+		} catch (error) {
+			// TODO: Handle network error
+			console.error('Network error', error);
+		}
+	};
+
+	const handleRegister = async () => {
+		try {
+			const response = await fetch('/api/auth/signup', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ email, password, age, fitnessGoal }),
+			});
+			if (!response.ok) {
+				// TODO: Handle registration error
+				console.error('Registration failed');
+				return;
+			}
+			const data = await response.json();
+			// TODO: Handle successful registration
+			console.log('Registration successful', data);
+		} catch (error) {
+			// TODO: Handle network error
+			console.error('Network error', error);
+		}
+	};
+
+	const handleGoogleLogin = () => {
+		window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_REDIRECT_URI}&response_type=code&scope=email%20profile`;
+	};
+
+	const handleAppleLogin = () => {
+		window.location.href = `https://appleid.apple.com/auth/authorize?client_id=${APPLE_CLIENT_ID}&redirect_uri=${APPLE_REDIRECT_URI}&response_type=code&scope=name%20email`;
+	};
+
+	const handleFacebookLogin = () => {
+		window.location.href = `https://www.facebook.com/v15.0/dialog/oauth?client_id=${FACEBOOK_CLIENT_ID}&redirect_uri=${FACEBOOK_REDIRECT_URI}&scope=email,public_profile`;
+	};
+
+	const handleGoogleRegister = () => {
+		window.location.href = `https://accounts.google.com/o/oauth2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_REDIRECT_URI}&response_type=code&scope=email%20profile`;
+	};
+
+	const handleAppleRegister = () => {
+		window.location.href = `https://appleid.apple.com/auth/authorize?client_id=${APPLE_CLIENT_ID}&redirect_uri=${APPLE_REDIRECT_URI}&response_type=code&scope=name%20email`;
+	};
+
+	const handleFacebookRegister = () => {
+		window.location.href = `https://www.facebook.com/v15.0/dialog/oauth?client_id=${FACEBOOK_CLIENT_ID}&redirect_uri=${FACEBOOK_REDIRECT_URI}&scope=email,public_profile`;
+	};
+
 	const [isLogin, setIsLogin] = useState(true);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -76,11 +146,11 @@ const AuthInterstitial: React.FC<AuthInterstitialProps> = ({ open, onClose }) =>
 						</div>
 
 						{/* Social Login Buttons */}
-						<GoogleLoginButton label="Login with Google" />
-						<AppleLoginButton label="Login with Apple" />
-						<FacebookLoginButton label="Login with Facebook" />
+						<GoogleLoginButton label="Login with Google" onClick={handleGoogleLogin} />
+						<AppleLoginButton label="Login with Apple" onClick={handleAppleLogin} />
+						<FacebookLoginButton label="Login with Facebook" onClick={handleFacebookLogin} />
 
-						<Button className="mt-2">Login</Button>
+						<Button className="mt-2" onClick={handleLogin}>Login</Button>
 					</div>
 				) : (
 					<div className="grid gap-4 py-4">
@@ -168,12 +238,12 @@ const AuthInterstitial: React.FC<AuthInterstitialProps> = ({ open, onClose }) =>
 
 						{/* Social Sign-up Buttons */}
 						<div className="flex items-center justify-center gap-3">
-							<GoogleLoginButton label="" />
-							<AppleLoginButton label="" />
-							<FacebookLoginButton label="" />
+							<GoogleLoginButton label="" onClick={handleGoogleRegister} />
+							<AppleLoginButton label="" onClick={handleAppleRegister} />
+							<FacebookLoginButton label="" onClick={handleFacebookRegister} />
 						</div>
 
-						<Button className="mt-2" disabled={!isEmailValid || !isPasswordValid}>Register</Button>
+						<Button className="mt-2" disabled={!isEmailValid || !isPasswordValid} onClick={handleRegister}>Register</Button>
 					</div>
 				)}
 
