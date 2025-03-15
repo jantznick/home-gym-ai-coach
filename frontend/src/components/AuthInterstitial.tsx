@@ -11,6 +11,16 @@ import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { GoogleLoginButton, AppleLoginButton, FacebookLoginButton } from "./SocialAuthButtons";
 
+import {
+	API_BASE_URL,
+	GOOGLE_CLIENT_ID,
+	GOOGLE_REDIRECT_URI,
+	APPLE_CLIENT_ID,
+	APPLE_REDIRECT_URI,
+	FACEBOOK_CLIENT_ID,
+	FACEBOOK_REDIRECT_URI
+} from "../config.ts";
+
 interface AuthInterstitialProps {
 	open: boolean;
 	onClose: () => void;
@@ -19,7 +29,7 @@ interface AuthInterstitialProps {
 const AuthInterstitial: React.FC<AuthInterstitialProps> = ({ open, onClose }) => {
 	const handleLogin = async () => {
 		try {
-			const response = await fetch('/api/auth/login', {
+			const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -42,7 +52,7 @@ const AuthInterstitial: React.FC<AuthInterstitialProps> = ({ open, onClose }) =>
 
 	const handleRegister = async () => {
 		try {
-			const response = await fetch('/api/auth/signup', {
+			const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

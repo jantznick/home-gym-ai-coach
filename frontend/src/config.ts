@@ -1,4 +1,4 @@
-export const API_BASE_URL = "http://localhost:5000";
+export const API_BASE_URL = "http://localhost:5555";
 
 // Social login configuration
 export const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID";
