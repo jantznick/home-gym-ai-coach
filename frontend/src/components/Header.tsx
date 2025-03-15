@@ -29,8 +29,8 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`fixed top-4 left-4 right-4 z-10 rounded-md bg-blue-500/90 text-white backdrop-blur-md shadow-md transition-all duration-300 ${
-        isSticky ? "top-0 left-0 right-0 rounded-none" : ""
+      className={`fixed z-10 rounded-md bg-blue-500/90 text-white backdrop-blur-md shadow-md transition-all duration-300 ${
+        !isSticky ? "top-4 left-4 right-4" : "top-0 left-0 right-0 rounded-none"
       }`}
     >
       <div className={`mx-auto flex items-center justify-between p-4 ${isSticky ? "container" : "container mx-auto"}`}>
