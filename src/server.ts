@@ -56,9 +56,21 @@ app.use(
 	})
 );
 
+const whitelist = ['http://localhost:8080']; // Add localhost:8080 to the allowed origins
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (!origin || whitelist.includes(origin)) {
+            callback(null, true); // Allow requests from whitelisted origins
+        } else {
+            callback(new Error('Not allowed by CORS')); // Block other origins
+        }
+    },
+    credentials: true // Allow credentials (cookies, authentication headers, etc.)
+};
 // Middleware
 app.use(express.json()) // Parse JSON request body
-app.use(cors())
+app.use(cors(corsOptions))
 
 // Setup Swagger
 setupSwagger(app)
