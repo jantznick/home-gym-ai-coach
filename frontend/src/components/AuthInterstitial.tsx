@@ -137,11 +137,23 @@ const AuthInterstitial: React.FC<AuthInterstitialProps> = ({ open, onClose }) =>
 
 						<div className="grid gap-2">
 							<Label htmlFor="email">Email</Label>
-							<Input id="email" type="email" placeholder="Email" required />
+							<Input
+								id="email"
+								type="email"
+								placeholder="Email"
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+								required
+							/>
 						</div>
 						<div className="grid gap-2">
 							<Label htmlFor="password">Password</Label>
-							<Input id="password" type="password" placeholder="Password" required />
+							<Input
+								id="password"
+								type="password"
+								placeholder="Password"
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+								required
+							/>
 						</div>
 
 						<div className="relative my-4">

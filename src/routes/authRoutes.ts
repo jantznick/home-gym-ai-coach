@@ -6,6 +6,7 @@ import nodemailer from "nodemailer";
 import axios from "axios";
 import dotenv from "dotenv";
 import { generateSlug } from "random-word-slugs";
+import { v4 as uuidv4 } from "uuid";
 
 import { requireAuth } from "../middleware/authMiddleware";
 
@@ -121,16 +122,32 @@ router.post("/login", async (req: Request, res: Response) => {
 		const { email, password } = req.body;
 
 		const user = await prisma.user.findUnique({ where: { email } });
-		if (!user || !(await bcrypt.compare(password, user.password))) {
+		if (!user || !user.password || !(await bcrypt.compare(password, user.password))) {
 			return res.status(401).json({ error: "Invalid credentials" });
 		}
 
-		// Generate JWT
-		const token = jwt.sign({ userId: user.id, email }, JWT_SECRET, {
-			expiresIn: "7d",
+		// Create a session ID using UUID
+		const sessionId = uuidv4();
+		const cookieAge = 30 * 24 * 60 * 60 * 1000 // 30 days
+		const expirationDate = new Date(new Date().getTime() + cookieAge); 
+
+		// Store the session in the database
+		await prisma.session.create({
+			data: {
+				id: sessionId,
+				userId: user.id,
+				expiration: expirationDate
+			},
 		});
 
-		res.status(200).json({ token });
+		// Set the session cookie
+		res.cookie('sessionId', sessionId, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+			maxAge: cookieAge
+		});
+
+		res.status(200).json({ message: "Logged in successfully" });
 	} catch (error) {
 		console.error("Login error:", error);
 		res.status(500).json({ message: "Internal Server Error" });
