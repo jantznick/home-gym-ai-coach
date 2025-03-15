@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"description": "React frontend for My Fitness App",
 	"private": true,
+  "type": "module",
 	"scripts": {
 		"dev": "npm run watch-css & webpack serve --mode development --open",
 		"build": "webpack --mode production",
