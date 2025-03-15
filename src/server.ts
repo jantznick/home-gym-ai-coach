@@ -67,8 +67,8 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/oauth", oauthRoutes);
 app.use("/api/qr-login", qrAuthRoutes);
-app.use("/api/stripe", stripeRoutes);
-app.use("/api/stripe/webhook", stripeWebhook);
+// app.use("/api/stripe", stripeRoutes);
+// app.use("/api/stripe/webhook", stripeWebhook);
 
 // Authentication Middleware
 app.use(authenticateUser);
@@ -79,14 +79,14 @@ app.use('/api/exercises', exerciseRoutes)
 app.use("/api/workouts", workoutRoutes);
 app.use("/api/muscles", muscleRoutes);
 app.use("/api/friends", friendRoutes);
-app.use("/api/chat", chatRoutes);
+// app.use("/api/chat", chatRoutes);
 app.use("/api/feed", feedRoutes);
 app.use("/api/strava", stravaRoutes);
-app.use("/api/stripe/subscription", stripeSubscriptionRoutes);
+// app.use("/api/stripe/subscription", stripeSubscriptionRoutes);
 
 // TODO: figure this error out
-app.use(requirePremium(req, res, next));
-app.use("/api/ai", aiRoutes);
+// app.use(requirePremium(req, res, next));
+// app.use("/api/ai", aiRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000

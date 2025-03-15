@@ -10,10 +10,11 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../components/ui/dialog"
-import { Button } from "../components/ui/button";
+import { Button, buttonVariants } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Calendar } from "../components/ui/calendar";
+
 
 const Home: React.FC = () => {
 	const [date, setDate] = React.useState<Date | undefined>(new Date())
@@ -26,15 +27,13 @@ const Home: React.FC = () => {
 				Go to About Page
 			</Link>
 
-			<Link to="/login" className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
-				Go to Login Page
-			</Link>
+			<Button to="/login">Go to Login Page</Button>
 
 			<Input />
 
 			<Dialog>
 				<DialogTrigger asChild>
-					<Button variant="outline">Edit Profile</Button>
+					<Button >Edit Profile</Button>
 				</DialogTrigger>
 				<DialogContent className="sm:max-w-[425px] bg-gray-300">
 					<DialogHeader>
@@ -58,7 +57,7 @@ const Home: React.FC = () => {
 						</div>
 					</div>
 					<DialogFooter>
-						<Button type="submit">Save changes</Button>
+						<Button className="bg-background text-foreground" type="submit">Save changes</Button>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
@@ -67,7 +66,7 @@ const Home: React.FC = () => {
 				mode="single"
 				selected={date}
 				onSelect={setDate}
-				className="rounded-md border"
+				className="rounded-md border bg-background"
 			/>
 
 		</div>
